@@ -31,18 +31,42 @@ def getDeptProducts(href, webDriver):
 		print(product.get_attribute('href'))
 	for c in containers:
 		print(c.get_attribute('alt'))
-		try:
+		try:	
 			print(c.get_attribute('alt'))
 		except:
 			pass
 	allProductHrefs.append(rawHrefs)
 	time.sleep(random.randint(1,20))
+	counter = 0
 	for href in rawHrefs:
-		if 'product-reviews' not in str(href):
-			webDriver.get(href)
-			break
+		if counter < 50:
+			brand = ""
+			if 'product-reviews' not in str(href):
+				if 'new-releases' not in str(href):
+					if 'movers-and-shakers' not in str(href):
+						if 'Appstore-Android' not in str(href):
+							counter = counter + 1
+							print(counter)
+							webDriver.get(href)
+							getBrand(brand, href, webDriver)	
 	time.sleep(random.randint(1,20))
 	rawHrefs.clear()
+
+def getBrand(brand, href, webDriver):
+	try:
+		data = webDriver.find_element_by_id('bylineInfo')
+		print(data.get_attribute('innerHTML'))
+		# brand = data.getText()
+		# print(brand)
+	except:
+		try:
+			data = webDriver.find_element_by_id('brand')
+			print(data.get_attribute('innerHTML'))	
+		except:
+			brand = "Could not get brand"
+			print(brand)
+			print(href)
+			time.sleep(100)
 
 	# outputDeptToFile(dept_name, products)
 def getProduct(href, webDriver):
@@ -55,8 +79,8 @@ def driver():
 	webDriver = webdriver.Chrome()
 	webDriver.get("https://www.amazon.com/best-sellers/zgbs")
 	hrefs = getAllDepts(webDriver)
-	for href in hrefs:
-		getDeptProducts(href, webDriver)
+	for href in range(3, len(hrefs)):
+		getDeptProducts(hrefs[href], webDriver)
 	webDriver.close()
 
 if __name__ == '__main__':
