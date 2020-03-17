@@ -76,51 +76,40 @@ def getBrand(brand, href, dept, webDriver):
 		data = webDriver.find_element_by_id('brand')
 		brand = data.get_attribute('innerHTML').strip()
 		print(brand)
+		productName = webDriver.find_element_by_css_selector("div#mas-title > div > span").get_attribute('innerHTML').strip()
+
 	else:
 		try:
 			data = webDriver.find_element_by_css_selector('a#bylineInfo')
 			brand = data.get_attribute('innerHTML').strip()
-			if(brand[0:4] == "by\n\n"):
-				brand = brand[4:len(brand)]
+			if(brand[:2] == "by" and (brand[3] == "\n" or brand[3] == " " or brand[3] == "\t")):
+				brand = brand[2:].strip()
 			print(brand)
+			productName = webDriver.find_element_by_css_selector("span#productTitle").get_attribute('innerHTML').strip()
 		except:
 			try:
 				data = webDriver.find_element_by_css_selector('a#bylineInfo')
 				brand = data.get_attribute('href')
 				brand = brand[1:len(brand)]
 				print(brand)	
+				productName = webDriver.find_element_by_css_selector("span#productTitle").get_attribute('innerHTML').strip()
 			except:	
 				pass
-# <a id="brand" class="a-link-normal" href="/Marino-Avenue/b/ref=w_bl_sl_l_s_ap_web_12247642011?ie=UTF8&amp;node=12247642011&amp;field-lbr_brands_browse-bin=Marino+Avenue"><img alt="" src="https://images-na.ssl-images-amazon.com/images/I/01WGRzbbtcL._SR120,50_.jpg" id="brand"></a>
 
+	# if(dept == "Apps &amp; Games"):
+		
+	# else:		
+		
+	print(productName)
 
-		#Get Books
-		# booksCheck1 = webDriver.find_element_by_id("wayfinding-breadcrumbs_feature_div")
-		# booksCheck2 = booksCheck1.find_element_by_class_name("a-list-item")
-		# booksCheck3 = booksCheck2.find_element_by_tag_name("a")
-		# if(booksCheck3.get_attribute('innerHTML').strip()=="Books"):
-		# 	getPub1 = webDriver.find_element_by_id("bylineInfo")
-		# 	getPub2 = getPub1.find_element_by_css_selector("#bylineInfo > span:nth-child(2)")
-		# 	getPub3 = getPub2.find_element_by_tag_name("a")
-		# 	brand = getPub3.get_attribute('innerHTML').strip()
-		# 	print(brand)
-		# else:
-		# 	try:		
-		# 		data = webDriver.find_element_by_id('bylineInfo')
-		# 		print(data.get_attribute('innerHTML'))
-		# 		brand = data.getText()
-		# 		print(brand.stript())
-		# 	except:
-		# 		try:
-		# 			data = webDriver.find_element_by_id('brand')
-		# 			print(data.get_attribute('innerHTML').stript())	
-		# 		except:
-		# 			brand = "Could not get brand"
-		# 			print(brand)
-		# 			print(href)
-		# 			# time.sleep(100)
+	# prodDetails = webDriver.find_elements_by_css_selector("#productDetails_detailBullets_sections1 > tbody > tr > th")
+	# for x in prodDetails:
+	# 	print(x.get_attribute('innerHTML').strip())
+	# 	if (x.get_attribute('innerHTML').strip() == "ASIN"):
+	# 		ASIN = x.find_element_by_xpath("following-sibling::td").get_attribute('innerHTML').strip()
+	# 		print(ASIN)
+	# 		break
 
-	# outputDeptToFile(dept_name, products)
 def getProduct(href, webDriver):
 	webDriver.get(href)
 
@@ -136,7 +125,7 @@ def driver():
 	# for dept in Depts:
 	# 	print(dept)
 	time.sleep(10)	
-	for href in range(0,len(hrefs)):
+	for href in range(22,len(hrefs)):
 		getDeptProducts(hrefs[href], Depts[href], webDriver)
 	webDriver.close()
 
