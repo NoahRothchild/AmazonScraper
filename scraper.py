@@ -72,6 +72,7 @@ def getDeptProducts(href, dept, webDriver):
 
 def getBrand(brand, href, dept, webDriver):
 	
+	productName = ""
 	if(dept == "Apps &amp; Games"):
 		data = webDriver.find_element_by_id('brand')
 		brand = data.get_attribute('innerHTML').strip()
@@ -125,7 +126,7 @@ def driver():
 	# for dept in Depts:
 	# 	print(dept)
 	time.sleep(10)	
-	for href in range(22,len(hrefs)):
+	for href in range(len(hrefs)):
 		getDeptProducts(hrefs[href], Depts[href], webDriver)
 	webDriver.close()
 
