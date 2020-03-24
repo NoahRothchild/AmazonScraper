@@ -12,7 +12,12 @@ def connect_db():
         cnx = mysql.connector.connect(user='admin', password='password', host='52.14.225.18', port='3306', database='CloverdaleCapital')
         cursor = cnx.cursor()
 
-        # insert_query('INSERT')
+        add_product = ('INSERT INTO Product '
+                        '(Name, PID, Made_by) '
+                        'VALUES (%s, %s, %s)')
+        data_product = ('Name of product', 'PID Number', 'Made by company')
+
+        cursor.execute(add_product, data_product)
 
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -22,6 +27,8 @@ def connect_db():
         else:
             print(err)
     else:
+        cnx.commit()
+        cursor.close()
         cnx.close()
 
 #currently skipping audio books, collectible currencies
