@@ -4,6 +4,26 @@ import time
 import random
 from selenium.webdriver.common.by import By
 
+import mysql.connector
+from mysql.connector import errorcode
+
+def connect_db():
+    try:
+        cnx = mysql.connector.connect(user='admin', password='password', host='52.14.225.18', port='3306', database='CloverdaleCapital')
+        cursor = cnx.cursor()
+
+        # insert_query('INSERT')
+
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print('User/pass error')
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print('DB does not exist')
+        else:
+            print(err)
+    else:
+        cnx.close()
+
 #currently skipping audio books, collectible currencies
 
 def getAllDepts(webDriver, Cat_list, href_list):
@@ -131,7 +151,8 @@ def driver():
 	webDriver.close()
 
 if __name__ == '__main__':
-	driver()
+	#driver()
+    connect_db()
 
 
 
