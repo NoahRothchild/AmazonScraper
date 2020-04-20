@@ -3,7 +3,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 import random
 from selenium.webdriver.common.by import By
-
+from selenium.webdriver.chrome.options import Options
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -50,6 +50,7 @@ def getAllDepts(webDriver, Cat_list, href_list):
         href_list.append(href.get_attribute('href'))
         Cat_list.append(href.get_attribute('innerHTML'))
     # return href_list
+    print(href_list)
     return
 
 def getDeptProducts(href, dept, webDriver, cnx):
@@ -162,10 +163,12 @@ def insertion(cnx, product, brand):
     print('insertion complete')
 
 def driver():
-    webDriver = webdriver.Chrome()
+    options = Options()
+    options.headless = True
+    webDriver = webdriver.Chrome(options=options)
     webDriver.get("https://www.amazon.com/best-sellers/zgbs")
     try:
-        cnx = mysql.connector.connect(user='admin', password='password', host='52.14.225.18', port='3306', database='CloverdaleCapital')
+        cnx = mysql.connector.connect(user='root', password='password',host='52.14.225.18', port='3306', database='CloverdaleCapital')
 
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -173,6 +176,7 @@ def driver():
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
             print('DB does not exist')
         else:
+            cnx=''
             print(err)
         
 
@@ -191,15 +195,3 @@ def driver():
 if __name__ == '__main__':
     #open_connection()
     driver()
-    
-
-
-
-
-'''
-GET ALL DEPTS
-'CLICK' ON EACH
-GET ALL SUB DEPT - optional for now
-SCRAPE ALL PRODUCT NAMES 
-OUTPUT THEM TO A FILE 
-''' 
