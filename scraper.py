@@ -221,7 +221,7 @@ def driver():
     else:
     	for href in hrefs[hrefs.index(check):]:
     		index = hrefs[hrefs.index(href)]
-    		getDeptProducts(hrefs[index],depts[index],webdriver,cnx)
+    		getDeptProducts(hrefs[index], Depts[index],webdriver,cnx)
     webDriver.close()
     cnx.close()
 
