@@ -41,6 +41,7 @@ def getAllDepts(webDriver, Cat_list, href_list):
     dept_list = all_depts.find_elements_by_tag_name("li")
     a_list = list()
     # href_list = list()
+    print('here')
     for el in dept_list:
         try:
             a_list.append(el.find_element_by_tag_name("a"))
@@ -133,7 +134,7 @@ def getBrand(brand, href, dept, webDriver, cnx):
     # else:        
 
     print(productName)
-    insertion(cnx, productName, brand)
+    insertion(cnx, productName, brand, dept)
     # prodDetails = webDriver.find_elements_by_css_selector("#productDetails_detailBullets_sections1 > tbody > tr > th")
     # for x in prodDetails:
     #     print(x.get_attribute('innerHTML').strip())
@@ -148,7 +149,7 @@ def getProduct(href, webDriver):
 def outputDeptToFile(dept, products):
     print('asf')
 
-def insertion(cnx, product, brand):
+def insertion(cnx, product, brand, dept):
     cursor = cnx.cursor()
 
     
@@ -161,6 +162,34 @@ def insertion(cnx, product, brand):
     cnx.commit()
     cursor.close()
     print('insertion complete')
+    print(dept)
+
+    cursor = cnx.cursor()
+    add_last_scraped_section = ('UPDATE PermIndex SET last_scraped_section=%s')
+    data_section = (dept,)
+    cursor.execute(add_last_scraped_section, data_section)
+    cnx.commit()
+    cursor.close()
+    print('indexed')
+
+def overwrite(cnx):
+	cursor = cnx.cursor()
+	modify_program_state = ('UPDATE PermIndex SET last_scraped_section=%s')
+	data_section = ("finished",)
+	cursor.execute(modify_program_state,data_section)
+	cnx.commit()
+	cursor.close()
+	print('State overwritten')
+
+def is_mid_run(cnx):
+	cursor = cnx.cursor()
+	query = ("SELECT * FROM PermIndex")
+	currentDept = ''
+	cursor.execute(query)
+	for el in cursor:
+		currentDept = el[0]
+	cursor.close()
+	return currentDept
 
 def driver():
     options = Options()
@@ -179,16 +208,20 @@ def driver():
             cnx=''
             print(err)
         
-
+    print(is_mid_run(cnx))
     Depts = list()
     hrefs = list()
     getAllDepts(webDriver, Depts, hrefs)
-    # for dept in Depts:
-    #     print(dept)
-    time.sleep(10)    
-    for href in range(len(hrefs)):
-        getDeptProducts(hrefs[href], Depts[href], webDriver, cnx)
-    
+    time.sleep(10)
+    check = is_mid_run(cnx)
+    if check == "finished":
+        for href in range(len(hrefs)):
+            print('succeeded finish check')
+            getDeptProducts(hrefs[href], Depts[href], webDriver, cnx)
+    else:
+    	for href in hrefs[hrefs.index(check):]:
+    		index = hrefs[hrefs.index(href)]
+    		getDeptProducts(hrefs[index],depts[index],webdriver,cnx)
     webDriver.close()
     cnx.close()
 
