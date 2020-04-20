@@ -156,7 +156,8 @@ def insertion(cnx, product, brand, dept):
     add_product = ('INSERT INTO Product '
                     '(Name, PID, Made_by) '
                     'VALUES (%s, %s, %s)')
-    data_product = (product, 1, brand)
+
+    data_product = (product.encode("ascii","ignore").decode('utf-8'), 1, brand.encode("ascii","ignore").decode('utf-8'))
 
     cursor.execute(add_product, data_product)
     cnx.commit()
@@ -166,7 +167,7 @@ def insertion(cnx, product, brand, dept):
 
     cursor = cnx.cursor()
     add_last_scraped_section = ('UPDATE PermIndex SET last_scraped_section=%s')
-    data_section = (dept,)
+    data_section = (dept.encode("ascii","ignore").decode('utf-8'),)
     cursor.execute(add_last_scraped_section, data_section)
     cnx.commit()
     cursor.close()
@@ -219,10 +220,11 @@ def driver():
             print('succeeded finish check')
             getDeptProducts(hrefs[href], Depts[href], webDriver, cnx)
     else:
-    	for href in hrefs[hrefs.index(check):]:
-    		index = hrefs[hrefs.index(href)]
-    		getDeptProducts(hrefs[index], Depts[index],webdriver,cnx)
+    	for href in hrefs[Depts.index(check):]:
+    		index = hrefs.index(href)
+    		getDeptProducts(hrefs[index],Depts[index],webdriver,cnx)
     webDriver.close()
+    webDriver.quit()
     cnx.close()
 
 if __name__ == '__main__':
